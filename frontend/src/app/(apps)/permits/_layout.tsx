@@ -8,7 +8,7 @@ const PermitsLayout = () => {
         <Stack screenOptions={{headerShown: true}}> 
             <Stack.Screen name="index" options={{ title: 'Permits', headerLeft: () => <CustomButtonComponent label="Close" onClick={()=>router.back()}/>}} />
             <Stack.Screen name="mypermits/index" options={{title: 'My Permits'}} />
-            <Stack.Screen name="mypermits/[permitId]" options={{title: 'Permit Details'}} />
+            <Stack.Screen name="[applicationId]" options={{title: 'Permit Details'}} />
             <Stack.Screen name="mypermits/AddPermit" options={{title: 'Add Permit'}} />
         </Stack>
     )

@@ -7,7 +7,7 @@ const MyPermitsHomePage = () => {
         <View> 
             <Text> Welcome to My Permits page </Text>
             
-            <Pressable onPress={ () => router.navigate(`/(apps)/permits/mypermits/${1}`)}>
+            <Pressable onPress={ () => router.navigate(`/(apps)/permits/${1}`)}>
                 <Text> 1. Permit to build swimming pool </Text>
             </Pressable>
 
