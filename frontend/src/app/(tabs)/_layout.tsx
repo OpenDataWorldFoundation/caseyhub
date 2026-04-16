@@ -1,7 +1,7 @@
 
 import { CustomNavbar } from "@/src/components/Navigation/CustomNavbar";
 import { Tabs } from "expo-router"
-import { Home } from "lucide-react-native";
+import { Home, Menu } from "lucide-react-native";
 
 const TabLayout = () => {
     return(
@@ -9,6 +9,10 @@ const TabLayout = () => {
             <Tabs.Screen name="index" options={{
                 title:'Home',
                 tabBarIcon: ({color, size}) => <Home color={color} size={size} />
+            }} />
+            <Tabs.Screen name="Menu" options={{
+                title:'Menu',
+                tabBarIcon: ({color, size}) => <Menu color={color} size={size} />
             }} />
         </Tabs>
     )
