@@ -9,7 +9,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Text className="text-3xl font-bold text-red-500">Welcome to Casey Hub v1.0.1.</Text>
     </View>
   );
 }
