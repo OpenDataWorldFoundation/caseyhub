@@ -11,6 +11,11 @@ public class Permit
     public DateTime? LodgedDate { get; private set; }
     public DateTime? DecisionDate { get; private set; }
 
+    private Permit()
+    {
+        ApplicationNumber = string.Empty;
+    }
+
     public Permit(
         string applicationNumber, 
         string? applicationCategory, 

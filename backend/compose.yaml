@@ -1,0 +1,35 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: caseyhub-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__CaseyHubDb: Host=db;Port=5432;Database=caseyhub;Username=caseyhub;Password=caseyhub
+    ports:
+      - "8080:8080"
+
+  db:
+    image: postgres:16
+    container_name: caseyhub-db
+    environment:
+      POSTGRES_DB: caseyhub
+      POSTGRES_USER: caseyhub
+      POSTGRES_PASSWORD: caseyhub
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U caseyhub -d caseyhub"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - caseyhub-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  caseyhub-postgres-data:
