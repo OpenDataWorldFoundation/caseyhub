@@ -26,8 +26,15 @@ public class CaseyHubDbContext(DbContextOptions<CaseyHubDbContext> options) : Db
             entity.Property(permit => permit.StageDecision)
                 .HasMaxLength(200);
 
-            entity.Property(permit => permit.Address)
-                .HasMaxLength(500);
+            entity.OwnsOne(p => p.Location, location =>
+            {
+                location.Property(l => l.RawAddress).HasColumnName("RawAddress");
+                location.Property(l => l.Suburb).HasColumnName("Suburb");
+                location.Property(l => l.State).HasColumnName("State");
+                location.Property(l => l.Postcode).HasColumnName("Postcode");
+                location.Property(l => l.Latitude).HasColumnName("Latitude");
+                location.Property(l => l.Longitude).HasColumnName("Longitude");
+            });
         });
 
         modelBuilder.Entity<User>(entity =>
