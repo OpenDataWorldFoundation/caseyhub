@@ -7,7 +7,7 @@ public class Permit
     public string? Description { get; private set; }
     public string? Status { get; private set; }
     public string? StageDecision { get; private set; }
-    public string? Address { get; private set; }
+    public Location? Location { get; private set; }
     public DateTime? LodgedDate { get; private set; }
     public DateTime? DecisionDate { get; private set; }
 
@@ -22,7 +22,7 @@ public class Permit
         string? description, 
         string? status, 
         string? stageDecision, 
-        string? address, 
+        Location? location, 
         DateTime? lodgedDate, 
         DateTime? decisionDate
     )
@@ -37,7 +37,7 @@ public class Permit
         Description = description;
         Status = status;
         StageDecision = stageDecision;
-        Address = address;
+        Location = location;
         LodgedDate = lodgedDate;
         DecisionDate = decisionDate;
     }
