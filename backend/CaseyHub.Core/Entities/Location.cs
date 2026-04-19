@@ -4,7 +4,7 @@ namespace CaseyHub.Core.Entities;
 
 public class Location
 {
-    public string RawAddress {get; private set;}
+    public string  RawAddress {get; private set;} = null!;
     public string? Suburb { get; private set; }
     public string State { get; private set; } = "VIC"; // Hardcoded for Casey Council
     public string? Postcode { get; private set; }
