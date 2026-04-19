@@ -10,7 +10,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__CaseyHubDb: Host=db;Port=5432;Database=caseyhub;Username=caseyhub;Password=caseyhub
+      ConnectionStrings__CaseyHubDb: ${CASEYHUB_DB_CONNECTION}
     ports:
       - "8080:8080"
 
@@ -20,7 +20,7 @@ services:
     environment:
       POSTGRES_DB: caseyhub
       POSTGRES_USER: caseyhub
-      POSTGRES_PASSWORD: caseyhub
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U caseyhub -d caseyhub"]
       interval: 10s
