@@ -37,7 +37,8 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddHttpClient<ICouncilDataClient, CaseyCouncilClient>(client =>
 {
     client.BaseAddress = new Uri("https://data.casey.vic.gov.au/api/explore/v2.1/catalog/datasets/");
-});
+}).ConfigurePrimaryHttpMessageHandler(()=>new HttpClientHandler{AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate});
+builder.Services.AddHttpClient<INominatimClient, NominatimClient>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
