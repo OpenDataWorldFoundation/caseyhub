@@ -12,10 +12,21 @@ public class PermitService(ICouncilDataClient councilDataClient, INominatimClien
 {
     public async Task<PermitDto?> GetPermitByAppNumberAsync (string applicationNumber)
     {
-        Permit? permitEntity = await councilDataClient.FetchPermitFromAppNumberAsync(applicationNumber);
-        if(permitEntity == null)
+        Permit? permitEntity = await dbContext.Permits.FirstOrDefaultAsync(p => p.ApplicationNumber == applicationNumber);
+        if(permitEntity != null)
         {
-            return null;
+            logger.LogInformation("Permit retrieved from local DB");
+        }
+        else
+        {
+            permitEntity = await councilDataClient.FetchPermitFromAppNumberAsync(applicationNumber);
+            if(permitEntity == null)
+            {
+                logger.LogWarning("Permit '{AppNumber} not found in both DB and API'", applicationNumber);
+                return null;
+            }
+            //if not in DB, saving while already fetching
+            await AddPermitByAppNumberToDBAsync(applicationNumber);
         }
         PermitDto? permitDto = new PermitDto(
             ApplicationNumber: permitEntity.ApplicationNumber,

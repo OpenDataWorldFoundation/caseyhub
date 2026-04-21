@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
+using CaseyHub.API.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -32,6 +33,9 @@ builder.Services.AddDbContext<CaseyHubDbContext>(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPermitService, PermitService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+//Background Worker
+builder.Services.AddHostedService<PermitNightlySyncWorker>();
 
 //HTTP Client for External Services
 builder.Services.AddHttpClient<ICouncilDataClient, CaseyCouncilClient>(client =>
