@@ -17,6 +17,16 @@ public class CaseyCouncilClient (HttpClient httpClient) : ICouncilDataClient
             {   
                 return null;
             }
+            Location? permitLocation = null;
+
+            if (!string.IsNullOrWhiteSpace(externalDto.PlanPermitAddress))
+            {
+                permitLocation = new Location(
+                    rawAddress: externalDto.PlanPermitAddress,
+                    suburb:null,
+                    postcode:null
+                );
+            }
 
             var permit = new Permit(
                 applicationNumber: externalDto.ApplicationNumber,
@@ -24,7 +34,7 @@ public class CaseyCouncilClient (HttpClient httpClient) : ICouncilDataClient
                 description: externalDto.Description,
                 status: externalDto.Status,
                 stageDecision: externalDto.StageDecision,
-                address: externalDto.PlanPermitAddress,
+                location: permitLocation,
                 lodgedDate: DateTime.TryParse(externalDto.LodgedDate, out var lodged)? lodged:null,
                 decisionDate: DateTime.TryParse(externalDto.DecisionDate, out var decision) ? decision : null
             );

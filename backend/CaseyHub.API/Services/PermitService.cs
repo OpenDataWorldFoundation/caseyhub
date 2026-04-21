@@ -18,7 +18,7 @@ public class PermitService(ICouncilDataClient councilDataClient) : IPermitServic
             Description: permitEntity.Description,
             Status: permitEntity.Status,
             StageDecision: permitEntity.StageDecision,
-            Address: permitEntity.Address,
+            Address: permitEntity.Location?.RawAddress,
             LodgedDate: permitEntity.LodgedDate,
             DecisionDate: permitEntity.DecisionDate
         );
