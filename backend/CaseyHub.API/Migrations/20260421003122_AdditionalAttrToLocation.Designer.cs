@@ -3,6 +3,7 @@ using System;
 using CaseyHub.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CaseyHub.API.Migrations
 {
     [DbContext(typeof(CaseyHubDbContext))]
-    partial class CaseyHubDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260421003122_AdditionalAttrToLocation")]
+    partial class AdditionalAttrToLocation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

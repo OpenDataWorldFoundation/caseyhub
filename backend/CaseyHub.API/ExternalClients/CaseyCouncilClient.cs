@@ -22,9 +22,7 @@ public class CaseyCouncilClient (HttpClient httpClient) : ICouncilDataClient
             if (!string.IsNullOrWhiteSpace(externalDto.PlanPermitAddress))
             {
                 permitLocation = new Location(
-                    rawAddress: externalDto.PlanPermitAddress,
-                    suburb:null,
-                    postcode:null
+                    rawAddress: externalDto.PlanPermitAddress
                 );
             }
 

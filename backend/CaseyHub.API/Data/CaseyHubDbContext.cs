@@ -29,7 +29,10 @@ public class CaseyHubDbContext(DbContextOptions<CaseyHubDbContext> options) : Db
             entity.OwnsOne(p => p.Location, location =>
             {
                 location.Property(l => l.RawAddress).HasColumnName("RawAddress");
+                location.Property(l => l.HouseNumber).HasColumnName("HouseNumber"); 
+                location.Property(l => l.Street).HasColumnName("Street");           
                 location.Property(l => l.Suburb).HasColumnName("Suburb");
+                location.Property(l => l.Municipality).HasColumnName("Municipality");
                 location.Property(l => l.State).HasColumnName("State");
                 location.Property(l => l.Postcode).HasColumnName("Postcode");
                 location.Property(l => l.Latitude).HasColumnName("Latitude");
