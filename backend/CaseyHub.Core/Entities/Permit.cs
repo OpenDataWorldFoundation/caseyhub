@@ -41,4 +41,20 @@ public class Permit
         LodgedDate = lodgedDate;
         DecisionDate = decisionDate;
     }
+
+    public void UpdateDetails(
+        string? applicationCategory, 
+        string? description, 
+        string? status, 
+        string? stageDecision, 
+        DateTime? lodgedDate, 
+        DateTime? decisionDate)
+    {
+        ApplicationCategory = applicationCategory;
+        Description = description;
+        Status = status;
+        StageDecision = stageDecision;
+        LodgedDate = lodgedDate;
+        DecisionDate = decisionDate;
+    }
 }

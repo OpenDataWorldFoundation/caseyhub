@@ -1,4 +1,5 @@
 using CaseyHub.API.Services;
+using CaseyHub.Core.Interfaces;
 using CaseyHub.Models.DTOs.Internal;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,5 +25,48 @@ public class PermitsController(IPermitService permitService) : ControllerBase
             return NotFound(new {message = $"Permit '{applicationNumber}' not found in council records."});
         }
         return Ok(permit);
+    }
+
+    [HttpGet("addPermitByAppNumber/{applicationNumber}")]
+    public async Task<IActionResult> AddPermitByApplicationNumber(string applicationNumber)
+    {
+        if (string.IsNullOrWhiteSpace(applicationNumber))
+        {
+            return BadRequest(new {message = "Application Number Cannot Be Empty."});
+        }
+        try
+        {
+            await permitService.AddPermitByAppNumberToDBAsync(applicationNumber);    
+            return Ok(new{message = $"Permit '{applicationNumber}' succesfully added"});
+        }catch(Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new {message = $"An error occured. See details: {ex.Message}"});
+        }
+    }
+    
+    [HttpGet("getEnrichSaveAllPermitsFromCouncil")]
+    public async Task<IActionResult> GetEnrichSaveAllPermitsFromCouncil()
+    {
+        try
+        {
+            await permitService.GetEnrichSaveAllPermitsAsync();
+            return Ok(new{message = "SAVED LITERALLY EVERYTHING FROM COUNCIL TO DB!!" });
+        }catch(Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new {message = $"An error occured. See details: {ex.Message}"});
+        }
+    }
+
+    [HttpGet("syncPermitsFromCouncil")]
+    public async Task<IActionResult> SyncPermitsFromCouncil()
+    {
+        try
+        {
+            await permitService.SyncPermitsAsync();
+            return Ok(new{message = "Sync Complete :)" });
+        }catch(Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new {message = $"An error occured. See details: {ex.Message}"});
+        }
     }
 }

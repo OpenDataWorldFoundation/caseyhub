@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
+using CaseyHub.API.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -33,11 +34,15 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPermitService, PermitService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
+//Background Worker
+builder.Services.AddHostedService<PermitNightlySyncWorker>();
+
 //HTTP Client for External Services
 builder.Services.AddHttpClient<ICouncilDataClient, CaseyCouncilClient>(client =>
 {
     client.BaseAddress = new Uri("https://data.casey.vic.gov.au/api/explore/v2.1/catalog/datasets/");
-});
+}).ConfigurePrimaryHttpMessageHandler(()=>new HttpClientHandler{AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate});
+builder.Services.AddHttpClient<INominatimClient, NominatimClient>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
