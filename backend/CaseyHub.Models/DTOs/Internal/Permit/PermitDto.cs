@@ -1,4 +1,4 @@
-namespace CaseyHub.Models.DTOs.Internal;
+namespace CaseyHub.Models.DTOs.Internal.Permit;
 public record PermitDto(
     string ApplicationNumber,
     string? ApplicationCategory,

@@ -1,0 +1,1 @@
+public record AddPermitRequestDto (string ApplicationNumber);

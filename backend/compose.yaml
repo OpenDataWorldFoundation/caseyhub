@@ -15,7 +15,7 @@ services:
       - "8080:8080"
 
   db:
-    image: postgres:16
+    image: postgis/postgis:16-3.4 #changed to postgis. postgres v16, postgis v3.4
     container_name: caseyhub-db
     environment:
       POSTGRES_DB: caseyhub

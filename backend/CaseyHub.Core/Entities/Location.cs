@@ -1,3 +1,4 @@
+using NetTopologySuite.Geometries;
 using System.Runtime.CompilerServices;
 
 namespace CaseyHub.Core.Entities;
@@ -14,6 +15,7 @@ public class Location
     public double? Latitude { get; private set; }
     public double? Longitude { get; private set; }
 
+    public Point? Coordinates {get; private set;}
     private Location(){}
 
     public Location(string rawAddress)
@@ -36,6 +38,7 @@ public class Location
         if (lng < -180 || lng > 180) throw new ArgumentOutOfRangeException(nameof(lng), "Longitude must be between -180 and 180.");
         Latitude = lat;
         Longitude = lng;
+        Coordinates = new Point (lng, lat) {SRID=4326}; //4326 is a standard for Earth
     }
 
 }
