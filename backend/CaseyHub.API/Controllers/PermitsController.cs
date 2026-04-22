@@ -1,6 +1,6 @@
 using CaseyHub.API.Services;
 using CaseyHub.Core.Interfaces;
-using CaseyHub.Models.DTOs.Internal;
+using CaseyHub.Models.DTOs.Internal.Permit;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaseyHub.API.Controllers;
@@ -27,46 +27,71 @@ public class PermitsController(IPermitService permitService) : ControllerBase
         return Ok(permit);
     }
 
-    [HttpGet("addPermitByAppNumber/{applicationNumber}")]
-    public async Task<IActionResult> AddPermitByApplicationNumber(string applicationNumber)
+    [HttpPost("addPermitByApplicationNumber")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AddPermitByApplicationNumber([FromBody] AddPermitRequestDto request)
     {
-        if (string.IsNullOrWhiteSpace(applicationNumber))
-        {
-            return BadRequest(new {message = "Application Number Cannot Be Empty."});
-        }
+        if (string.IsNullOrWhiteSpace(request.ApplicationNumber))
+            return BadRequest(new { message = "Application number cannot be empty." });
         try
         {
-            await permitService.AddPermitByAppNumberToDBAsync(applicationNumber);    
-            return Ok(new{message = $"Permit '{applicationNumber}' succesfully added"});
-        }catch(Exception ex)
+            await permitService.AddPermitByAppNumberToDBAsync(request.ApplicationNumber);
+            return CreatedAtAction(
+                nameof(GetPermitByApplicationNumber),
+                new { applicationNumber = request.ApplicationNumber },
+                new { message = $"Permit '{request.ApplicationNumber}' successfully added." }
+            );
+        }
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, new {message = $"An error occured. See details: {ex.Message}"});
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
         }
     }
     
-    [HttpGet("getEnrichSaveAllPermitsFromCouncil")]
+    [HttpPost("enrichSaveAllPermits")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetEnrichSaveAllPermitsFromCouncil()
     {
         try
         {
-            await permitService.GetEnrichSaveAllPermitsAsync();
-            return Ok(new{message = "SAVED LITERALLY EVERYTHING FROM COUNCIL TO DB!!" });
-        }catch(Exception ex)
+            await permitService.EnrichSaveAllPermitsAsync();
+            return Ok(new { message = "All permits fetched, enriched and saved." });
+        }
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, new {message = $"An error occured. See details: {ex.Message}"});
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
         }
     }
 
-    [HttpGet("syncPermitsFromCouncil")]
+    [HttpPost("syncPermitsFromCouncil")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> SyncPermitsFromCouncil()
     {
         try
         {
             await permitService.SyncPermitsAsync();
-            return Ok(new{message = "Sync Complete :)" });
-        }catch(Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new {message = $"An error occured. See details: {ex.Message}"});
+            return Ok(new { message = "Sync complete." });
         }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+        }
+    }
+
+    [HttpGet("getNearbyPermits")]
+    [ProducesResponseType(typeof(PermitDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetNearbyPermits([FromQuery] string address, [FromQuery] int radiusKm = 5)
+    {
+        if (string.IsNullOrWhiteSpace(address))
+        {
+            return BadRequest(new {message = "Address cannot be empty"});
+        }
+        var permits = await permitService.GetPermitsNearAddressAsync(address, radiusKm);
+        return Ok(permits);
     }
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using CaseyHub.API.Data;
 using CaseyHub.API.ExternalClients;
@@ -5,7 +6,7 @@ using CaseyHub.API.Services;
 using CaseyHub.Core.Entities;
 using CaseyHub.Core.Interfaces;
 using CaseyHub.Models.DTOs.External;
-using CaseyHub.Models.DTOs.Internal;
+using CaseyHub.Models.DTOs.Internal.Permit;
 using Microsoft.EntityFrameworkCore;
 
 public class PermitService(ICouncilDataClient councilDataClient, INominatimClient nominatimClient, CaseyHubDbContext dbContext, ILogger<PermitService> logger) : IPermitService
@@ -100,7 +101,7 @@ public class PermitService(ICouncilDataClient councilDataClient, INominatimClien
             }
     }
 
-    public async Task GetEnrichSaveAllPermitsAsync()
+    public async Task EnrichSaveAllPermitsAsync()
     {
         try
         {
@@ -228,6 +229,31 @@ public class PermitService(ICouncilDataClient councilDataClient, INominatimClien
         {
             logger.LogError(ex, "An Error Occured.");
         }
+    }
+
+    public async Task<List<PermitDto>> GetPermitsNearAddressAsync (string address, int radius)
+    {
+        if (string.IsNullOrWhiteSpace(address)) return new List<PermitDto>();
+        logger.LogInformation("Enriching user's address using Nominatim");
+        var geoResult = await nominatimClient.EnrichAddressAsync(address, usePrivateServer: false);
+        if(geoResult == null || 
+            !double.TryParse(geoResult.Latitude, out double latitude) || 
+            !double.TryParse(geoResult.Longitude, out double longitude)
+        )
+        {
+            logger.LogCritical("Address is invalid, or nominatim didn't return a location object");
+            return new List<PermitDto>();
+        }
+
+        var targetLocation = new NetTopologySuite.Geometries.Point(latitude, longitude){SRID=4326};
+        double radiusInMeters = radius * 1000; //Radius Passed in KMs, converted to Meters
+
+        var nearbyPermits = await dbContext.Permits
+                                .Where(P => P.Location !=null && P.Location.Coordinates !=null && P.Location.Coordinates.IsWithinDistance(targetLocation, radiusInMeters))
+                                .Select(p => new PermitDto(p.ApplicationNumber, p.ApplicationCategory, p.Description, p.Status, p.StageDecision, p.Location!.RawAddress, p.LodgedDate, p.DecisionDate))
+                                .ToListAsync();
+
+        return nearbyPermits;
     }
 }
 

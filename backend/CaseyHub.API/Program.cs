@@ -12,6 +12,7 @@ using Microsoft.OpenApi;
 using System.Text;
 using CaseyHub.API.Workers;
 
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
@@ -27,7 +28,9 @@ if (Encoding.UTF8.GetByteCount(jwtKey) < 32)
 var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
 builder.Services.AddDbContext<CaseyHubDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("CaseyHubDb")));
+    options.UseNpgsql
+        (builder.Configuration.GetConnectionString("CaseyHubDb"),
+        o => o.UseNetTopologySuite()));
 
 //Services
 builder.Services.AddScoped<IAuthService, AuthService>();

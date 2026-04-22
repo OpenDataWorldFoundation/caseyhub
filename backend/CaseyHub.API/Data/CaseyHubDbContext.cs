@@ -37,6 +37,7 @@ public class CaseyHubDbContext(DbContextOptions<CaseyHubDbContext> options) : Db
                 location.Property(l => l.Postcode).HasColumnName("Postcode");
                 location.Property(l => l.Latitude).HasColumnName("Latitude");
                 location.Property(l => l.Longitude).HasColumnName("Longitude");
+                location.Property(l => l.Coordinates).HasColumnName("Coordinates").HasColumnType("geography (Point, 4326)");
             });
         });
 
