@@ -9,4 +9,6 @@ public interface IPermitService
     Task EnrichSaveAllPermitsAsync();
     Task SyncPermitsAsync();
     Task<List<PermitDto>> GetPermitsNearAddressAsync(string address, int radius);
+    Task SaveUserPermitAsync (Guid userId, string applicationNumber);
+    Task<List<PermitDto>> GetUserSavedPermitsAsync (Guid userId);
 }

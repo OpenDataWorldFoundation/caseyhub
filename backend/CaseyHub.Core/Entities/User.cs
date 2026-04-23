@@ -8,6 +8,9 @@ public class User
     public string PasswordHash { get; private set; }
     public DateTime CreatedAtUtc { get; private set; }
 
+    private readonly List<Permit> _savedPermits = new ();
+    public IReadOnlyCollection<Permit> SavedPermits => _savedPermits.AsReadOnly();
+
     private User()
     {
         Name = string.Empty;
@@ -37,5 +40,14 @@ public class User
         Email = email.Trim().ToLowerInvariant();
         PasswordHash = passwordHash;
         CreatedAtUtc = DateTime.UtcNow;
+    }
+
+    public void AddSavedPermit (Permit permit)
+    {
+        if (permit == null) throw new ArgumentNullException(nameof(permit));
+        if (!_savedPermits.Any(p=>p.ApplicationNumber == permit.ApplicationNumber))
+        {
+            _savedPermits.Add(permit);
+        }
     }
 }

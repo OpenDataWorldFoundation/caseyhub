@@ -261,5 +261,58 @@ public class PermitService(ICouncilDataClient councilDataClient, INominatimClien
         logger.LogInformation("The information in query is- Location not null, location's coordinates not null, and location is within distance {targetLocation}, {radiusInMeters}", targetLocation, radiusInMeters);
         return nearbyPermits;
     }
+
+    public async Task SaveUserPermitAsync (Guid userId, string applicationNumber)
+    {
+        //1 -> Check if the application number is even valid
+        Permit? permitEntity = await dbContext.Permits.FirstOrDefaultAsync(p => p.ApplicationNumber == applicationNumber);
+        if(permitEntity != null)
+        {
+            logger.LogInformation("Permit retrieved from local DB");
+        }
+        else
+        {
+            permitEntity = await councilDataClient.FetchPermitFromAppNumberAsync(applicationNumber);
+            if(permitEntity == null)
+            {
+                logger.LogWarning("Permit '{AppNumber} not found in both DB and API'", applicationNumber);
+                throw new KeyNotFoundException($"Application Number {applicationNumber} NOT FOUND.");
+            }
+            //if not in DB, saving while already fetching
+            await AddPermitByAppNumberToDBAsync(applicationNumber);
+        }
+        //At this stage, we can confirm the permit exists.
+        var user = await dbContext.Users.Include(u => u.SavedPermits).FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            logger.LogWarning("User not found in database: {userId}", userId);
+            throw new KeyNotFoundException($"User with ID {userId} not found");
+        }
+        user.AddSavedPermit(permitEntity);
+        await dbContext.SaveChangesAsync();
+        logger.LogInformation("Permit {AppNumber} saved against User {useriD} ", applicationNumber, userId);
+    }
+
+    public async Task<List<PermitDto>> GetUserSavedPermitsAsync (Guid userId)
+    {
+        logger.LogInformation("Fetching saved permits for User '{UserId}'.", userId);
+        var savedPermits = await dbContext.Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.SavedPermits)
+            .Select(p => new PermitDto(
+                p.ApplicationNumber, 
+                p.ApplicationCategory, 
+                p.Description, 
+                p.Status, 
+                p.DecisionStage, 
+                p.Location!.RawAddress, 
+                p.LodgedDate, 
+                p.DecisionDate
+            ))
+            .ToListAsync();
+        logger.LogInformation("Successfully retrieved {Count} saved permits for User '{UserId}'.", savedPermits.Count, userId);
+        return savedPermits;
+    }
 }
 

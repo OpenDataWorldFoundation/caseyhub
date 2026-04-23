@@ -62,6 +62,13 @@ public class CaseyHubDbContext(DbContextOptions<CaseyHubDbContext> options) : Db
 
             entity.Property(user => user.PasswordHash)
                 .HasMaxLength(1000);
+            entity.HasMany(u => u.SavedPermits)
+                .WithMany() 
+                .UsingEntity<Dictionary<string, object>>(
+                    "UserSavedPermits", 
+                    j => j.HasOne<Permit>().WithMany().HasForeignKey("ApplicationNumber"),
+                    j => j.HasOne<User>().WithMany().HasForeignKey("UserId")
+                );
         });
     }
 }
