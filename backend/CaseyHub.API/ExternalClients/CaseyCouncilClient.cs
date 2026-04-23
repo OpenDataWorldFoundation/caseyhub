@@ -31,10 +31,14 @@ public class CaseyCouncilClient (HttpClient httpClient, ILogger<CaseyCouncilClie
                 applicationCategory: externalDto.ApplicationCategory,
                 description: externalDto.Description,
                 status: externalDto.Status,
-                stageDecision: externalDto.StageDecision,
+                decisionStage: externalDto.DecisionStage,
+                decision: externalDto.DecisionNew,
+                serviceArea: externalDto.ServiceAreaDescription,
                 location: permitLocation,
                 lodgedDate: DateTime.TryParse(externalDto.LodgedDate, out var lodged)? DateTime.SpecifyKind(lodged, DateTimeKind.Utc) :null,
-                decisionDate: DateTime.TryParse(externalDto.DecisionDate, out var decision) ? DateTime.SpecifyKind(decision, DateTimeKind.Utc) : null
+                decisionDate: DateTime.TryParse(externalDto.DecisionDate, out var decision) ? DateTime.SpecifyKind(decision, DateTimeKind.Utc) : null,
+                advertiseCommencedDate: DateTime.TryParse(externalDto.AdvertiseCommncedDate, out var adCommneced)? DateTime.SpecifyKind(lodged, DateTimeKind.Utc) :null,
+                advertiseCompletedDate: DateTime.TryParse(externalDto.AdvertiseCompletedDate, out var adCompleted)? DateTime.SpecifyKind(lodged, DateTimeKind.Utc) :null
             );
 
             return permit;
@@ -74,10 +78,14 @@ public class CaseyCouncilClient (HttpClient httpClient, ILogger<CaseyCouncilClie
                     applicationCategory: onePermit.ApplicationCategory,
                     description: onePermit.Description,
                     status: onePermit.Status,
-                    stageDecision: onePermit.StageDecision,
+                    decisionStage: onePermit.DecisionStage,
+                    decision: onePermit.DecisionNew,
+                    serviceArea: onePermit.ServiceAreaDescription,
                     location: permitLocation,
                     lodgedDate: DateTime.TryParse(onePermit.LodgedDate, out var lodged)? DateTime.SpecifyKind(lodged, DateTimeKind.Utc) :null,
-                    decisionDate: DateTime.TryParse(onePermit.DecisionDate, out var decision) ? DateTime.SpecifyKind(decision, DateTimeKind.Utc) : null
+                    decisionDate: DateTime.TryParse(onePermit.DecisionDate, out var decision) ? DateTime.SpecifyKind(decision, DateTimeKind.Utc) : null,
+                    advertiseCommencedDate: DateTime.TryParse(onePermit.AdvertiseCommncedDate, out var adCommneced)? DateTime.SpecifyKind(lodged, DateTimeKind.Utc) :null,
+                    advertiseCompletedDate: DateTime.TryParse(onePermit.AdvertiseCompletedDate, out var adCompleted)? DateTime.SpecifyKind(lodged, DateTimeKind.Utc) :null
                 );
                 permits.Add(permit);
             };

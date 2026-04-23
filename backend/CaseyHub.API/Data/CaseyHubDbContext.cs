@@ -23,7 +23,13 @@ public class CaseyHubDbContext(DbContextOptions<CaseyHubDbContext> options) : Db
             entity.Property(permit => permit.Status)
                 .HasMaxLength(100);
 
-            entity.Property(permit => permit.StageDecision)
+            entity.Property(permit => permit.DecisionStage)
+                .HasMaxLength(200);
+                
+            entity.Property(p => p.Decision)
+            .HasMaxLength(200);
+
+            entity.Property(p => p.ServiceArea)
                 .HasMaxLength(200);
 
             entity.OwnsOne(p => p.Location, location =>

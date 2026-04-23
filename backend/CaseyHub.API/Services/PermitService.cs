@@ -34,7 +34,7 @@ public class PermitService(ICouncilDataClient councilDataClient, INominatimClien
             ApplicationCategory: permitEntity.ApplicationCategory,
             Description: permitEntity.Description,
             Status: permitEntity.Status,
-            StageDecision: permitEntity.StageDecision,
+            StageDecision: permitEntity.DecisionStage,
             Address: permitEntity.Location?.RawAddress,
             LodgedDate: permitEntity.LodgedDate,
             DecisionDate: permitEntity.DecisionDate
@@ -181,9 +181,13 @@ public class PermitService(ICouncilDataClient councilDataClient, INominatimClien
                         oneCouncilPermit.ApplicationCategory,
                         oneCouncilPermit.Description,
                         oneCouncilPermit.Status,
-                        oneCouncilPermit.StageDecision,
+                        oneCouncilPermit.DecisionStage,
+                        oneCouncilPermit.Decision,
+                        oneCouncilPermit.ServiceArea,
                         oneCouncilPermit.LodgedDate,
-                        oneCouncilPermit.DecisionDate
+                        oneCouncilPermit.DecisionDate,
+                        oneCouncilPermit.AdvertiseCommencedDate,
+                        oneCouncilPermit.AdvertiseCompletedDate
                     );
                     updatedCount++;
                 }
@@ -236,6 +240,7 @@ public class PermitService(ICouncilDataClient councilDataClient, INominatimClien
         if (string.IsNullOrWhiteSpace(address)) return new List<PermitDto>();
         logger.LogInformation("Enriching user's address using Nominatim");
         var geoResult = await nominatimClient.EnrichAddressAsync(address, usePrivateServer: false);
+        logger.LogInformation("Response received from External Nominatim: {geoResult}", geoResult);
         if(geoResult == null || 
             !double.TryParse(geoResult.Latitude, out double latitude) || 
             !double.TryParse(geoResult.Longitude, out double longitude)
@@ -245,14 +250,15 @@ public class PermitService(ICouncilDataClient councilDataClient, INominatimClien
             return new List<PermitDto>();
         }
 
-        var targetLocation = new NetTopologySuite.Geometries.Point(latitude, longitude){SRID=4326};
+        var targetLocation = new NetTopologySuite.Geometries.Point(longitude, latitude){SRID=4326};
+        logger.LogInformation("THE TARGETED LOCATION IS: {targetLocation}", targetLocation);
         double radiusInMeters = radius * 1000; //Radius Passed in KMs, converted to Meters
-
+        logger.LogInformation("The radius to search within is: {radiusInMeters} ", radiusInMeters);
         var nearbyPermits = await dbContext.Permits
                                 .Where(P => P.Location !=null && P.Location.Coordinates !=null && P.Location.Coordinates.IsWithinDistance(targetLocation, radiusInMeters))
-                                .Select(p => new PermitDto(p.ApplicationNumber, p.ApplicationCategory, p.Description, p.Status, p.StageDecision, p.Location!.RawAddress, p.LodgedDate, p.DecisionDate))
+                                .Select(p => new PermitDto(p.ApplicationNumber, p.ApplicationCategory, p.Description, p.Status, p.DecisionStage, p.Location!.RawAddress, p.LodgedDate, p.DecisionDate))
                                 .ToListAsync();
-
+        logger.LogInformation("The information in query is- Location not null, location's coordinates not null, and location is within distance {targetLocation}, {radiusInMeters}", targetLocation, radiusInMeters);
         return nearbyPermits;
     }
 }
