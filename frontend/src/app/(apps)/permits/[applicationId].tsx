@@ -14,7 +14,7 @@ const PermitDetail = () => {
             <Text> Application Description: {permit?.description} </Text>
             <Text> Application Address: {permit?.address} </Text>
             <Text> Application Lodged Date: {permit?.lodgedDate} </Text>
-            <Text> Application Current Stage: {permit?.stageDecision} </Text>
+            <Text> Application Current Stage: {permit?.decisionStage} </Text>
             {permit?.decisionDate &&  <Text> Application Decision Date: {permit?.decisionDate} </Text> }
         </View>
     )

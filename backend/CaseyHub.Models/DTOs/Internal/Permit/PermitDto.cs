@@ -4,7 +4,7 @@ public record PermitDto(
     string? ApplicationCategory,
     string? Description,
     string? Status,
-    string? StageDecision,
+    string? DecisionStage,
     string? Address,
     DateTime? LodgedDate,
     DateTime? DecisionDate

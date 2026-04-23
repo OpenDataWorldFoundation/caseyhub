@@ -3,7 +3,7 @@ export interface Permit {
   applicationCategory: string;
   description: string;
   status: string;
-  stageDecision: string;
+  decisionStage: string;
   address: string;
   lodgedDate: string;  
   decisionDate: string;

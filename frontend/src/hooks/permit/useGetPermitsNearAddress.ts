@@ -17,6 +17,6 @@ export const useGetPermitsNearAddress = (userAddress: string, radius: number) =>
     return useQuery<Permit[], Error>({
         queryKey: ["permits", "nearby", userAddress, radius],
         queryFn: () => fetchNearbyPermits(userAddress, radius),
-        enabled: !!userAddress
+        enabled: false
     })
 }

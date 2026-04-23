@@ -34,7 +34,7 @@ public class PermitService(ICouncilDataClient councilDataClient, INominatimClien
             ApplicationCategory: permitEntity.ApplicationCategory,
             Description: permitEntity.Description,
             Status: permitEntity.Status,
-            StageDecision: permitEntity.DecisionStage,
+            DecisionStage: permitEntity.DecisionStage,
             Address: permitEntity.Location?.RawAddress,
             LodgedDate: permitEntity.LodgedDate,
             DecisionDate: permitEntity.DecisionDate
@@ -240,7 +240,7 @@ public class PermitService(ICouncilDataClient councilDataClient, INominatimClien
         if (string.IsNullOrWhiteSpace(address)) return new List<PermitDto>();
         logger.LogInformation("Enriching user's address using Nominatim");
         var geoResult = await nominatimClient.EnrichAddressAsync(address, usePrivateServer: false);
-        logger.LogInformation("Response received from External Nominatim: {geoResult}", geoResult);
+        logger.LogInformation("User Address resolved by Nominatim: {geoResult}", geoResult);
         if(geoResult == null || 
             !double.TryParse(geoResult.Latitude, out double latitude) || 
             !double.TryParse(geoResult.Longitude, out double longitude)
@@ -255,7 +255,7 @@ public class PermitService(ICouncilDataClient councilDataClient, INominatimClien
         double radiusInMeters = radius * 1000; //Radius Passed in KMs, converted to Meters
         logger.LogInformation("The radius to search within is: {radiusInMeters} ", radiusInMeters);
         var nearbyPermits = await dbContext.Permits
-                                .Where(P => P.Location !=null && P.Location.Coordinates !=null && P.Location.Coordinates.IsWithinDistance(targetLocation, radiusInMeters))
+                                .Where(P => P.Status !=null & P.Status != "Past" && P.Location !=null && P.Location.Coordinates !=null && P.Location.Coordinates.IsWithinDistance(targetLocation, radiusInMeters))
                                 .Select(p => new PermitDto(p.ApplicationNumber, p.ApplicationCategory, p.Description, p.Status, p.DecisionStage, p.Location!.RawAddress, p.LodgedDate, p.DecisionDate))
                                 .ToListAsync();
         logger.LogInformation("The information in query is- Location not null, location's coordinates not null, and location is within distance {targetLocation}, {radiusInMeters}", targetLocation, radiusInMeters);

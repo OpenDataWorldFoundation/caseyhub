@@ -1,4 +1,5 @@
 import CustomButtonComponent from "@/src/components/Shared/CustomButtonComponent";
+import { useCheckPermitExists } from "@/src/hooks/permit/useCheckPermitExists";
 import { useGetPermitByAppNumber } from "@/src/hooks/permit/useGetPermitByAppNumber";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -9,7 +10,7 @@ const CheckPermitStatus = () => {
     const [appNumber, setAppNumber] = useState("");
     const [searchError, setSearchError] = useState("");
 
-    const {refetch, isFetching} = useGetPermitByAppNumber(appNumber, {enabled: false, retry: false});
+    const {refetch, isFetching} = useCheckPermitExists(appNumber);
     const handleCheckStatus = async () => {
         setSearchError("");
         if (!appNumber.trim()) return;
