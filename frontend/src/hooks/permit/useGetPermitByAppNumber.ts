@@ -1,8 +1,11 @@
+import { BACKEND_BASE_URL } from '@/src/constants/api';
+import { useAuth } from '@/src/context/authContext';
 import { Permit } from '@/src/types';
+import { authFetch } from '@/src/utils/authFetch';
 import {useQuery} from '@tanstack/react-query'
 
-const fetchPermit = async (appNumber: string): Promise<Permit> => {
-    const response = await fetch(`http://localhost:8080/api/Permits/getPermitByAppNumber/${encodeURIComponent(appNumber)}`);
+const fetchPermit = async (appNumber: string, userToken: string | null): Promise<Permit> => {
+    const response = await authFetch(`/permits/getPermitByAppNumber/${encodeURIComponent(appNumber)}`, userToken);
 
     if(!response.ok){
         throw new Error ('Network response was not OK');
@@ -11,9 +14,10 @@ const fetchPermit = async (appNumber: string): Promise<Permit> => {
 }
 
 export const useGetPermitByAppNumber = (appNumber: string, options = {}) => {
+    const {userToken} = useAuth();
     return useQuery<Permit, Error> ({
-        queryKey: ['permit', 'byAppNumber', appNumber],
-        queryFn: () => fetchPermit(appNumber),
+        queryKey: ['permits', 'byAppNumber', appNumber],
+        queryFn: () => fetchPermit(appNumber, userToken),
         enabled: !!appNumber
     });
 };
