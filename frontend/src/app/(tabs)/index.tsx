@@ -1,7 +1,7 @@
 import React from "react";
 import { View, FlatList } from "react-native";
 import { useRouter } from "expo-router";
-import { Bell, Book, MapPin } from "lucide-react-native";
+import { Book } from "lucide-react-native";
 import HomeHeader from "@/src/components/HomePage/HomeHeader";
 import AnAppComponent from "@/src/components/HomePage/AnAppComponent";
 

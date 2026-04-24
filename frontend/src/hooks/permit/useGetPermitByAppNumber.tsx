@@ -1,8 +1,9 @@
 import { Permit } from '@/src/types';
 import {useQuery} from '@tanstack/react-query'
+import { buildApiUrl } from '@/src/lib/api';
 
 const fetchPermit = async (appNumber: string): Promise<Permit> => {
-    const response = await fetch(`http://localhost:5059/api/Permits/getPermitByAppNumber/${encodeURIComponent(appNumber)}`);
+    const response = await fetch(buildApiUrl(`/api/Permits/getPermitByAppNumber/${encodeURIComponent(appNumber)}`));
 
     if(!response.ok){
         throw new Error ('Network response was not OK');
