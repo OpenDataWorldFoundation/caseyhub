@@ -18,6 +18,7 @@ export const useLogin = () => {
 
             const data = await response.json();
             await login (data.token);
+            return data;
         }
     });
 }

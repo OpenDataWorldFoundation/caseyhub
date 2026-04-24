@@ -14,6 +14,8 @@ export const useRegister = () => {
                 if(!response.ok){
                     throw new Error ("Registration Failed.")
                 }
+                const data = await response.json();
+                return data;
             }
         }
     )
