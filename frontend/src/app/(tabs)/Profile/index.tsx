@@ -4,8 +4,7 @@ import { router } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
 const ProfileHomePage = () => {
-    const {isLoading, userToken} = useAuth();
-    
+    const {isLoading, userToken, logout} = useAuth();
     if (isLoading) {
         return (
             <View className="flex-1 items-center justify-center">
@@ -24,8 +23,8 @@ const ProfileHomePage = () => {
                 </View>
             ) : (
                 <View>
-                    <Text>You are logged in 🎉</Text>
-                    <Pressable> Log Out </Pressable>
+                    <Text>You are logged in</Text>
+                    <CustomButtonComponent label="Logout" onClick={logout} />
                 </View>
             )}
         </View>

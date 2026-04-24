@@ -2,6 +2,7 @@ import { authFetch } from "@/src/utils/authFetch"
 import { useMutation } from "@tanstack/react-query"
 
 interface RegisterProps {
+    name: string
     email: string,
     password: string
 }
