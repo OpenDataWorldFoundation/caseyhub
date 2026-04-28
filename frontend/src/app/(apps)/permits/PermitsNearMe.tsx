@@ -30,7 +30,6 @@ const PermitsNearMe = () => {
     return (
         <View style={{ flex: 1 }}>
             
-            {/* 🔒 FIXED HEADER SECTION */}
             <View style={{ padding: 16 }}>
                 <Text className="text-4xl">Find Permits Near You</Text>
 
@@ -53,7 +52,6 @@ const PermitsNearMe = () => {
                 ) : null}
             </View>
 
-            {/* 📜 SCROLLABLE RESULTS */}
             <FlatList
                 data={permits}
                 keyExtractor={(item) => item.applicationNumber}
