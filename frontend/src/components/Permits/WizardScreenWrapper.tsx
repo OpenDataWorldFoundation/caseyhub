@@ -1,7 +1,8 @@
 import { ClauseDto } from "@/src/types/permitchecker/responses";
 import { router } from "expo-router";
 import React from "react";
-import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import ClauseSidebar from "./ClauseSidebar";
 
 interface WizardScreenWrapperProps {

@@ -6,7 +6,7 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
 
-export default function PermitCheckerAddressScreen() {
+const PermitCheckerAddressScreen = () => {
   const [address, setAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -68,3 +68,5 @@ export default function PermitCheckerAddressScreen() {
     </WizardScreenWrapper>
   );
 }
+
+export default PermitCheckerAddressScreen;
