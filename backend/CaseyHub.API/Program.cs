@@ -11,6 +11,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
 using CaseyHub.API.Workers;
+using CaseyHub.API.Repositories;
+using CaseyHub.API.Evaluators;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,15 +29,22 @@ if (Encoding.UTF8.GetByteCount(jwtKey) < 32)
 
 var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
+//DB
 builder.Services.AddDbContext<CaseyHubDbContext>(options =>
     options.UseNpgsql
         (builder.Configuration.GetConnectionString("CaseyHubDb"),
         o => o.UseNetTopologySuite()));
+//Cache
+builder.Services.AddMemoryCache();
 
 //Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPermitService, PermitService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IPermitCheckerRepository, PermitCheckerRepository>();
+builder.Services.AddScoped<IConditionEvaluator, ConditionEvaluator>();
+builder.Services.AddScoped<IPermitEvaluatorService, PermitEvaluatorService>();
+builder.Services.AddScoped<IPermitCheckerAddressService, PermitCheckerAddressService>();
 
 //Background Worker
 builder.Services.AddHostedService<PermitNightlySyncWorker>();
@@ -46,6 +55,11 @@ builder.Services.AddHttpClient<ICouncilDataClient, CaseyCouncilClient>(client =>
     client.BaseAddress = new Uri("https://data.casey.vic.gov.au/api/explore/v2.1/catalog/datasets/");
 }).ConfigurePrimaryHttpMessageHandler(()=>new HttpClientHandler{AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate});
 builder.Services.AddHttpClient<INominatimClient, NominatimClient>();
+builder.Services.AddHttpClient<IVicPlanWfsClient, VicPlanWfsClient>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(15);
+    client.DefaultRequestHeaders.Add("User-Agent", "CaseyHub-Backend");
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -89,6 +103,14 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+
+//Migrations for rules
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<CaseyHubDbContext>();
+    await dbContext.Database.MigrateAsync();
+    await PermitCheckerSeeder.SeedAsync(dbContext);
+}
 
 using (var scope = app.Services.CreateScope())
 {

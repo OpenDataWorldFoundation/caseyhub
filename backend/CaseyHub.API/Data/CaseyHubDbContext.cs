@@ -1,3 +1,4 @@
+using CaseyHub.API.Data.Configurations;
 using CaseyHub.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +8,12 @@ public class CaseyHubDbContext(DbContextOptions<CaseyHubDbContext> options) : Db
 {
     public DbSet<Permit> Permits => Set<Permit>();
     public DbSet<User> Users => Set<User>();
-
+    public DbSet<BuildingType> BuildingTypes=> Set<BuildingType>();
+    public DbSet<PlanningClause> PlanningClauses=> Set<PlanningClause>();
+    public DbSet<ZoneOverrideRule>  ZoneOverrideRules=> Set<ZoneOverrideRule>();
+    public DbSet<PermitRule> PermitRules=> Set<PermitRule>();
+    public DbSet<RuleQuestion> RuleQuestions=> Set<RuleQuestion>();
+    public DbSet<PermitAssessment> PermitAssessments=> Set<PermitAssessment>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Permit>(entity =>
@@ -70,5 +76,11 @@ public class CaseyHubDbContext(DbContextOptions<CaseyHubDbContext> options) : Db
                     j => j.HasOne<User>().WithMany().HasForeignKey("UserId")
                 );
         });
+        modelBuilder.ApplyConfiguration(new BuildingTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new PlanningClauseConfiguration());
+        modelBuilder.ApplyConfiguration(new ZoneOverrideRuleConfiguration());
+        modelBuilder.ApplyConfiguration(new PermitRuleConfiguration());
+        modelBuilder.ApplyConfiguration(new RuleQuestionConfiguration());
+        modelBuilder.ApplyConfiguration(new PermitAssessmentConfiguration());
     }
 }
