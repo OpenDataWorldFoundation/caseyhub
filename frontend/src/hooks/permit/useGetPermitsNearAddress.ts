@@ -1,4 +1,4 @@
-import { Permit } from "@/src/types";
+import { Permit } from "@/src/types/types";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchNearbyPermits = async (userAddress: string, radius: number ): Promise<Permit[]> => {

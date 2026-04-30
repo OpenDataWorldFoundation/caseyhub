@@ -1,6 +1,6 @@
 import { BACKEND_BASE_URL } from '@/src/constants/api';
 import { useAuth } from '@/src/context/authContext';
-import { Permit } from '@/src/types';
+import { Permit } from '@/src/types/types';
 import { authFetch } from '@/src/utils/authFetch';
 import {useQuery} from '@tanstack/react-query'
 

@@ -1,4 +1,4 @@
-import { Permit } from "@/src/types";
+import { Permit } from "@/src/types/types";
 import { router } from "expo-router";
 import { navigate } from "expo-router/build/global-state/routing";
 import { Pressable, Text, View } from "react-native";

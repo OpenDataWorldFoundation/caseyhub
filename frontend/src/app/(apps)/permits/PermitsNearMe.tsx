@@ -1,7 +1,7 @@
 import { PermitCard } from "@/src/components/Permits/PermitCard";
 import CustomButtonComponent from "@/src/components/Shared/CustomButtonComponent";
 import { useGetPermitsNearAddress } from "@/src/hooks/permit/useGetPermitsNearAddress";
-import { Permit } from "@/src/types";
+import { Permit } from "@/src/types/types";
 import { router } from "expo-router";
 import { navigate } from "expo-router/build/global-state/routing";
 import { Building } from "lucide-react-native";
