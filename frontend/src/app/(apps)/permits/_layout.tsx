@@ -7,7 +7,7 @@ const PermitsLayout = () => {
     return (
         <Stack screenOptions={{headerShown: true}}> 
             <Stack.Screen name="index" options={{ title: 'Permits', headerLeft: () => <CustomButtonComponent label="Close" onClick={()=>router.back()}/>}} />
-            <Stack.Screen name="permit-checker/index" options={{ title: 'Permit Checker' }} />
+            <Stack.Screen name="permit-checker" options={{ title: 'Permit Checker', headerShown: false }} />
             <Stack.Screen name="CheckPermitStatus" options={{ title: 'Check Status' }} />
             <Stack.Screen name="PermitsNearMe" options={{ title: 'Nearby Permits' }} />
             <Stack.Screen name="mypermits/index" options={{ title: 'My Permits' }} />

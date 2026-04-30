@@ -55,6 +55,8 @@ export default function BuildingTypeScreen() {
           triggeredRules: response.triggeredRules ?? [],
           clausesInScope: response.clausesInScope,
           assessmentId: response.assessmentId,
+          status: response.status,
+          nextQuestions: response.nextQuestions
         });
         router.push("/(apps)/permits/permit-checker/result");
       } else {

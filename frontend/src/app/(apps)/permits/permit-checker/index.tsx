@@ -16,7 +16,7 @@ const PermitCheckerAddressScreen = () => {
 
   // Reset any previous wizard state when the user starts fresh
   React.useEffect(() => {
-    reset();
+    reset(); //resetting zustand store
   }, []);
 
   const { refetch, isFetching } = useAddressLookup(address);
@@ -24,9 +24,7 @@ const PermitCheckerAddressScreen = () => {
   const handleSubmit = async () => {
     setError(null);
     if (!address.trim()) return;
-
     const result = await refetch();
-
     if (result.isError) {
       setError("Could not look up that address. Please check it and try again.");
       return;
@@ -41,11 +39,11 @@ const PermitCheckerAddressScreen = () => {
         zoneCode: result.data.zoneCode,
         zoneDescription: result.data.zoneDescription,
         overlayCodes: result.data.overlayCodes,
-        clausesInScope: result.data.relevantClauses,
+        relevantClauses: result.data.relevantClauses,
       });
-
       router.push("/(apps)/permits/permit-checker/building-type");
     }
+    
   };
 
   return (

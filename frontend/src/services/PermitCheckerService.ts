@@ -1,6 +1,7 @@
 import { BACKEND_BASE_URL } from "@/src/constants/api";
 import { AddressLookupResponseDto, BuildingTypeDto, EvaluationResponseDto } from "../types/permitchecker/responses";
 import { AddressLookupRequestDto, EvaluationRequestDto } from "../types/permitchecker/requests";
+import { authFetch } from "../utils/authFetch";
 
 
 const BASE = `${BACKEND_BASE_URL}/permit-checker`;
@@ -21,18 +22,11 @@ export async function fetchBuildingTypes(token: string | null): Promise<Building
   return handleResponse<BuildingTypeDto[]>(response);
 }
 
-export async function lookupAddress(
-  payload: AddressLookupRequestDto,
-  token: string | null
-): Promise<AddressLookupResponseDto> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-
-  const response = await fetch(`${BASE}/address`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(payload),
-  });
+export async function lookupAddress(payload: AddressLookupRequestDto,token: string | null): Promise<AddressLookupResponseDto> {
+  
+  // const headers: Record<string, string> = { "Content-Type": "application/json" };
+  // if (token) headers["Authorization"] = `Bearer ${token}`;
+  const response = await authFetch(`/permit-checker/address`, token, {method: "POST", body: JSON.stringify(payload)});
   return handleResponse<AddressLookupResponseDto>(response);
 }
 

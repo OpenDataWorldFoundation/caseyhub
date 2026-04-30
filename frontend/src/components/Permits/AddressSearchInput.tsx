@@ -23,6 +23,11 @@ const AddressSearchInput: React.FC<AddressSearchInputProps> = ({
   return (
     <View className="gap-y-3">
       <TextInput
+        style={{ 
+          textAlignVertical: 'center',
+          includeFontPadding: false,
+          minHeight: 48
+        }}
         className="border border-gray-300 rounded-lg px-4 py-3 text-base text-black bg-white"
         placeholder={placeholder}
         placeholderTextColor="#9CA3AF"

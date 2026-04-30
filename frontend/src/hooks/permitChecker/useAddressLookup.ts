@@ -4,9 +4,6 @@ import { AddressLookupRequestDto } from "@/src/types/permitchecker/requests";
 import { AddressLookupResponseDto } from "@/src/types/permitchecker/responses";
 import { useQuery } from "@tanstack/react-query";
 
-// Uses enabled:false + refetch() pattern — matches useGetPermitsNearAddress in this codebase.
-// The address is submitted imperatively on form submit, not reactively on state change.
-
 export const useAddressLookup = (address: string) => {
   const { userToken } = useAuth();
 

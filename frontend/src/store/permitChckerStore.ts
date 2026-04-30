@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ClauseDto, EvaluationOutcome, QuestionDto, TriggeredRuleDto } from "@/src/types/permitchecker/responses";
+import { AddressLookupResponseDto, ClauseDto, EvaluationOutcome, EvaluationResponseDto, QuestionDto, TriggeredRuleDto } from "@/src/types/permitchecker/responses";
 
 
 interface PermitCheckerState {
@@ -22,36 +22,32 @@ interface PermitCheckerState {
 
 
 interface PermitCheckerActions {
-  setAddressLookupResult: (result: {
-    sessionId: string;
-    normalisedAddress: string;
-    latitude: number;
-    longitude: number;
-    zoneCode: string;
-    zoneDescription: string;
-    overlayCodes: string[];
-    clausesInScope: ClauseDto[];
-  }) => void;
-
+  // setAddressLookupResult: (result: {
+  //   sessionId: string;
+  //   normalisedAddress: string;
+  //   latitude: number;
+  //   longitude: number;
+  //   zoneCode: string;
+  //   zoneDescription: string;
+  //   overlayCodes: string[];
+  //   clausesInScope: ClauseDto[];
+  // }) => void;
+  setAddressLookupResult: (result: AddressLookupResponseDto) => void
   setBuildingType: (slug: string, displayName: string) => void;
-
   mergeAnswers: (newAnswers: Record<string, unknown>) => void;
-
-  setClausesInScope: (clauses: ClauseDto[]) => void;
-
-  setVerdict: (result: {
-    outcome: EvaluationOutcome;
-    outcomeSummary: string;
-    triggeredRules: TriggeredRuleDto[];
-    clausesInScope: ClauseDto[];
-    assessmentId: string | null;
-  }) => void;
-
+  setClausesInScope: (clauses: ClauseDto[]) => void
+  // setVerdict: (result: {
+  //   outcome: EvaluationOutcome;
+  //   outcomeSummary: string;
+  //   triggeredRules: TriggeredRuleDto[];
+  //   clausesInScope: ClauseDto[];
+  //   assessmentId: string | null;
+  // }) => void;
+  setVerdict: (result: EvaluationResponseDto) => void;
   reset: () => void;
 }
 
 // Initial state
-
 const initialState: PermitCheckerState = {
   sessionId: null,
   normalisedAddress: null,
@@ -84,7 +80,7 @@ export const usePermitCheckerStore = create<PermitCheckerState & PermitCheckerAc
         zoneCode: result.zoneCode,
         zoneDescription: result.zoneDescription,
         overlayCodes: result.overlayCodes,
-        clausesInScope: result.clausesInScope,
+        clausesInScope: result.relevantClauses,
       }),
 
     setBuildingType: (slug, displayName) =>

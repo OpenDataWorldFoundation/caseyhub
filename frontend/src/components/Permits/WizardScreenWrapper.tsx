@@ -15,15 +15,8 @@ interface WizardScreenWrapperProps {
   showBack?: boolean;      // default true
 }
 
-const WizardScreenWrapper: React.FC<WizardScreenWrapperProps> = ({
-  stepLabel,
-  title,
-  subtitle,
-  clausesInScope,
-  children,
-  onBack,
-  showBack = true,
-}) => {
+const WizardScreenWrapper = ({stepLabel,title,subtitle,clausesInScope,children,onBack,showBack = true}: WizardScreenWrapperProps) => {
+   
   const handleBack = () => {
     if (onBack) {
       onBack();
@@ -34,6 +27,7 @@ const WizardScreenWrapper: React.FC<WizardScreenWrapperProps> = ({
 
   return (
     <SafeAreaView className="flex-1 bg-white">
+      {/* <View className="bg-gray-900"> <Text className="text-center font-2xl font-bold text-white"> Permit Checker </Text> </View> */}
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ padding: 24, paddingBottom: 48 }}
@@ -60,12 +54,13 @@ const WizardScreenWrapper: React.FC<WizardScreenWrapperProps> = ({
         ) : (
           <View className="mb-6" />
         )}
-
-        {/* Screen-specific content */}
+        
+        {/* All Passed Children*/}
         {children}
 
-        {/* Relevant Clauses sidebar — always visible once populated */}
+        {/* Relevant Clauses sidebar: visible once populated */}
         <ClauseSidebar clauses={clausesInScope} />
+
       </ScrollView>
     </SafeAreaView>
   );
